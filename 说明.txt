@@ -1,0 +1,8 @@
+使用步骤：
+    初始化项目 yarn init -yarn
+
+    安装依赖 webpack、 webpack-cli
+
+    在项目中创建src目录，编写代码 (index.js)
+
+    执行 yarn webpack对代码进行打包（打包后观察dist目录）
