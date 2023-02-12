@@ -6,3 +6,113 @@
     在项目中创建src目录，编写代码 (index.js)
 
     执行 yarn webpack对代码进行打包（打包后观察dist目录）
+
+
+    配置文件（webpack.config.js）
+    const  path = require("path")
+module.exports={
+    //设置打包模式 production：生产模式 development 开发模式
+    mode:"production",
+    //用来指定打包时的主文件 默认为./src/index.js
+    //entry:"./hello/hello.js",
+    //entry:["./src/a.js","./src/b.js"]
+    // entry:{
+    //     a:"./src/a.js",
+    //     b:"./src/b.js",
+    // },
+    //配置代码打包后的地址
+    output:{
+        //打包后的文件名
+        //filename:"main.js",
+        // filename:"[name]-[id]-[hash].js",
+       //自动清理打包目录
+       // clean:true,
+        //指定打包目录，必须为绝对路径
+        // path:path.resolve(__dirname,"dist"),
+    },
+    /* 
+        webpack默认情况下，只会处理js文件，如果我们希望它可以处理其他类型的文件，则需要为其相应的loader
+
+        以css 为例
+            使用css-loader可以处理js中的样式
+            使用步骤：
+                1 安装： yarn add css-loader
+                2 配置： 
+                module:{
+                    rules:[
+                    {   //  正则表达式
+                        test: /\.css$/i,
+                        use:"css-loader"
+                    }
+                ]
+   }
+    */
+
+    
+   module:{
+    rules:[
+        {   //  正则表达式
+            test: /\.css$/i,
+            use:["style-loader","css-loader"]
+        },
+     
+        {
+            test: /\.(png|jpg|jpeg|gif|svg)$/,
+              // 图片直接资源类型数据，可以通过指定type来处理
+              type:"asset/resource" 
+        }
+    ]
+   }
+}
+
+在编写js代码时，经常需要使用一些js中的新特性，而新特性在旧的浏览器中兼容性并不好。
+此时就导致我们无法使用一些新的特性。
+但是我们希望能用新特性，我们可以采用折中方案。依然使用新特性编写代码，
+但是代码编写完成时我们可以通过一些工具将新代码转换为就代码
+
+babel 可以将新的js语法转换为旧的js,以提高代码的兼容性
+
+我们如果希望在webpack支持babel,则需要向webpack中引入babel的loader
+
+使用步骤：
+    1   安装 
+        npm install -D babel-loader @babel/core @babel/preset-env 
+    2   配置
+        module: {
+                rules: [
+                    {
+                    test: /\.m?js$/,
+                    exclude: /node_modules/,
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                        presets: [
+                            ['@babel/preset-env', { targets: "defaults" }]
+                        ]
+                        }
+                    }
+                    }
+                ]
+}
+
+3 在package.json中设置兼容列表
+
+     "broserlist": [ "defaults"]
+
+插件(plugin)
+    插件用来为webpack处理功能
+        html-webpack-plugin
+            可以在打包代码后，自动在打包目录生成html页面
+                使用步骤：
+                    下载：
+                        yarn add html-webpack-plugin
+                    配置：
+                         plugins:[
+                        new htmlplugin({
+                            // title: '这是一个网页',
+                            template:"./src/style/index.html"
+                        })
+                        ],
+
+  //设置映射 在打包后对源码进行调试
+   devtool:"inline-source-map"
